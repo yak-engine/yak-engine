@@ -1,10 +1,8 @@
 import Scaffold from './scaffold';
 import Graphics from './graphics/graphics';
 import Time from './time';
-import Scene from './graphics/scene';
 import SceneManager from './scene-manager';
 import { Logger } from './logging/logger';
-import Layer from './graphics/layer';
 import Tileset from './graphics/tileset';
 
 export default class Application {
@@ -27,9 +25,8 @@ export default class Application {
      * @since 11/8/2020
      */
     start(): void {
-        fetch('./scaffold.json').then((response) => response.json()).then(async (scaffold: Scaffold) => {
+        fetch('./bundle/scaffold.json').then((response) => response.json()).then(async (scaffold: Scaffold) => {
             this.graphics.scene = await SceneManager.load(scaffold.scenes[0]);
-            Logger.data(this.graphics.scene);
 
             let loadedTilesets = 0;
             
@@ -63,18 +60,12 @@ export default class Application {
      * @author NSSure
      * @since 11/8/2020
      */
-    mainLoop(elapsed: number) {
-        window.requestAnimationFrame((elapsed: number) => this.mainLoop(elapsed));
+    mainLoop(time: number) {
+        window.requestAnimationFrame((time: number) => this.mainLoop(time));
 
-        var delta = (elapsed - this._previousElapsed) / 1000.0;
-        delta = Math.min(delta, 0.25); // maximum delta of 250 ms
-        this._previousElapsed = elapsed;
-
-        Time.calculateDeltaTime(this._previousElapsed);
-
-        this.graphics.draw(delta);
+        Time.calculateDeltaTime(time);
+        
+        this.graphics.draw(time);
         this.graphics.render();
     }
-
-    _previousElapsed: number;
 }
