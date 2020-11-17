@@ -1,5 +1,4 @@
 const path = require('path');
-let CopyWebpackPlugin  = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './demo.ts',
@@ -47,15 +46,5 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-  },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: './src/editor/panes/**/*.html',
-          to: 'overlays',
-        }
-      ],
-    }),
-  ]
+  }
 };

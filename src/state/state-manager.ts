@@ -1,31 +1,25 @@
-import { Logger } from "../logging/logger";
-
 export default class StateManager {
-    data: Map<string, any> = new Map<string, any>();
+    public static data: Map<string, any> = new Map<string, any>();
 
-    constructor() {
-
+    public static commit<TType>(key: string, value: TType) {
+        StateManager.data.set(key, value);
     }
 
-    commit<TType>(key: string, value: TType) {
-        this.data.set(key, value);
-    }
-
-    get<TType>(key: string) {
-        if (this.data.has(key)) {
-            return <TType>this.data.get(key);
+    public static get<TType>(key: string) {
+        if (StateManager.data.has(key)) {
+            return <TType>StateManager.data.get(key);
         }
 
         return null;
     }
 
-    exists(key: string): boolean {
-        return this.data.has(key);
+    public static exists(key: string): boolean {
+        return StateManager.data.has(key);
     }
 
-    delete(key: string): void {
-        if (this.data.has(key)) {
-            this.data.delete(key)
+    public static delete(key: string): void {
+        if (StateManager.data.has(key)) {
+            StateManager.data.delete(key)
         }
     }
 }
