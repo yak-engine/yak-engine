@@ -16,11 +16,13 @@ export default class SpriteRenderer {
     run(): void {
         this.drawLayers();
 
-        this.graphics.context.fillStyle = 'white';
-        this.graphics.context.fillRect(0, 0, 32, 32);
+        this.graphics.context.fillStyle = 'red';
+        this.graphics.context.fillRect(this.graphics.camera.target.x, this.graphics.camera.target.y, 32, 32);
     }
 
     drawLayers(): void {
+        let spritesDrawn = 0;
+
         this.graphics.scene.layers.forEach((layer: Layer) => {
             if (layer.enabled) {
                 let startColumn = Math.floor(this.graphics.camera.viewport.x / this.graphics.scene.spriteSize);
@@ -32,13 +34,13 @@ export default class SpriteRenderer {
                 let offsetX = -this.graphics.camera.viewport.x + startColumn * this.graphics.scene.spriteSize;
                 let offsetY = -this.graphics.camera.viewport.y + startRow * this.graphics.scene.spriteSize;
 
-                for(var column = startColumn; column < endColumn; column++){ //this loops over the columns
-                    for(var row = startRow; row < endRow; row++){ //this loops over the rows
+                for(var column = startColumn; column <= endColumn; column++){
+                    for(var row = startRow; row <= endRow; row++){
                         let sprite: number = layer.sprites[row * this.graphics.scene.columns + column];
 
                         let x = (column - startColumn) * this.graphics.scene.spriteSize + offsetX;
-                        let y = (row - startColumn) * this.graphics.scene.spriteSize + offsetY;
-                        
+                        let y = (row - startRow) * this.graphics.scene.spriteSize + offsetY;
+
                         this.graphics.context.drawImage(
                             this.graphics.tilesets[layer.tileset].image,
                             sprite * this.graphics.scene.spriteSize,
@@ -49,10 +51,14 @@ export default class SpriteRenderer {
                             Math.round(y),
                             this.graphics.scene.spriteSize,
                             this.graphics.scene.spriteSize
-                        )
+                        );
+
+                        spritesDrawn++;
                     }
                 }
             }
         });
+
+        // console.log(`Sprites drawn: ${spritesDrawn}`);
     }
 }

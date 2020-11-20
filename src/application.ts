@@ -4,6 +4,7 @@ import Time from './time';
 import SceneManager from './scene-manager';
 import { Logger } from './logging/logger';
 import Tileset from './graphics/tileset';
+import Input from './graphics/input';
 
 export default class Application {
     /**
@@ -16,6 +17,8 @@ export default class Application {
      */
     graphics: Graphics = new Graphics();
 
+    input: Input;
+
     scaffold: Scaffold;
 
     /**
@@ -27,6 +30,8 @@ export default class Application {
     start(): void {
         fetch('./bundle/scaffold.json').then((response) => response.json()).then(async (scaffold: Scaffold) => {
             this.graphics.scene = await SceneManager.load(scaffold.scenes[0]);
+
+            Logger.data(this.graphics.scene);
 
             let loadedTilesets = 0;
             
@@ -64,8 +69,10 @@ export default class Application {
         window.requestAnimationFrame((time: number) => this.mainLoop(time));
 
         Time.calculateDeltaTime(time);
+
+        this.graphics.context.clearRect(0, 0, this.graphics.getCanvasWidth(), this.graphics.getCanvasHeight());
         
-        this.graphics.draw(time);
         this.graphics.render();
+        this.graphics.update(Time.deltaTime);
     }
 }

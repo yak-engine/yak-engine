@@ -1,3 +1,5 @@
+import { Logger } from "../logging/logger";
+
 export default class Transform {
     x: number;
     y: number;
@@ -9,6 +11,14 @@ export default class Transform {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    clampX(min: number, maxLowerRange: number, maxUpperRange: number): void {
+        this.x = Math.max(min, Math.min(maxLowerRange, maxUpperRange));  
+    }
+
+    clampY(min: number, maxLowerRange: number, maxUpperRange: number): void {
+        this.y = Math.max(min, Math.min(maxLowerRange, maxUpperRange)); 
     }
 
     /**

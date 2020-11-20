@@ -15,6 +15,13 @@ import Configuration from "../configuration";
 import Scene from "./scene";
 import Camera from "./camera";
 import Input from "./input";
+import Physics from "../physics/physics";
+import SquareCollider from "../physics/collision/square-collider";
+import Collider from "../physics/collision/collider";
+import isCoordinateContained from "../helpers/is-coordinate-contained";
+import screenToWorld from "../helpers/screen-to-world";
+import worldToScreen from "../helpers/world-to-screen";
+import areTransformsOverlapping from "../helpers/are-transforms-overlapping";
 
 export default class Graphics {
     /**
@@ -86,16 +93,29 @@ export default class Graphics {
 
     public input: Input = new Input();
 
+    public testSpeed: number = 50;
+
     /**
      * Default constructor. Queries the canvas together with the canvas context
      * and bootstraps the canvas events.
      */
     constructor() {
-        this.camera.viewport = new Transform(0, 0, 512, 512);
-        this.camera.max = new Point(64 * 32 - 512, 64 * 32 - 512);
-
         // Ensure we resize the canvas here.
-        this.resizeCanvas();
+        // this.resizeCanvas();
+
+        // Test collider.
+        Physics.colliders.push(new SquareCollider(new Transform(0, 0, 32, 32)));
+
+        this.camera.viewport = new Transform(0, 0, 512, 512);
+        this.camera.max = new Point(32 * 32, 32 * 32);
+
+        Logger.data(this.camera);
+
+        this.camera.target = new Transform(512 / 2, 512 / 2, 32, 32);
+        // this.camera.target = new Transform(0, 0, 32, 32);
+
+        this.setCanvasHeight(512);
+        this.setCanvasWidth(512);
 
         this.engineCanvas.addEventListener('mousedown', (event) => this.onCanvasMouseDown(event));
         this.engineCanvas.addEventListener('mouseup', (event) => this.onCanvasMouseUp(event));
@@ -109,18 +129,69 @@ export default class Graphics {
      * @author NSSure
      * @since 11/8/2020
      */
-    draw(deltaTime: number) {
-        if (this.isMouseDown) {
-            // move camera
-            this.camera.viewport.x += 1 * 256 * deltaTime;
-            this.camera.viewport.y += 1 * 256 * deltaTime;
+    update(deltaTime: number) {
+        // let x = 0;
+        // let y = 0;
 
-            // clamp values
-            this.camera.viewport.x = Math.max(0, Math.min(this.camera.viewport.x, this.camera.max.x));
-            this.camera.viewport.y = Math.max(0, Math.min(this.camera.viewport.y, this.camera.max.y));
+        // if (Input.isPressed('a'))
+        //     x = -1;
+        // if (Input.isPressed('d'))
+        //     x = 1;
+        // if (Input.isPressed('w'))
+        //     y = -1;
+        // if (Input.isPressed('s'))
+        //     y = 1;
 
-            Logger.data(deltaTime);
+        // move camera
+        // this.camera.viewport.x += x * 256 * deltaTime;
+        // this.camera.viewport.y += y * 256 * deltaTime;
+        let horizontal = Input.horizontal();
+        let vertical = Input.vertical();
+
+        if (horizontal !== 0) {
+            this.camera.target.x += horizontal * this.testSpeed;
+            let horizontalThird = this.getCanvasWidth() / 3;
+            this.camera.target.clampX(horizontalThird, this.camera.target.x, (horizontalThird * 2));
+
+            if (this.camera.target.x >= (horizontalThird * 2) || this.camera.target.x <= horizontalThird) {
+                this.camera.viewport.x += (horizontal * this.testSpeed);
+            }
         }
+
+        if (vertical !== 0) {
+            this.camera.target.y += vertical * this.testSpeed;
+            let verticalThird = this.getCanvasHeight() / 3;
+            this.camera.target.clampY(verticalThird, this.camera.target.y, (verticalThird * 2));
+
+            if (this.camera.target.y >= (verticalThird * 2) || this.camera.target.y <= verticalThird) {
+                this.camera.viewport.y += (vertical * this.testSpeed);
+            }
+        }
+
+
+
+        // clamp values
+        // this.camera.viewport.x = Math.max(0, Math.min(this.camera.viewport.x, this.camera.max.x));
+        // this.camera.viewport.y = Math.max(0, Math.min(this.camera.viewport.y, this.camera.max.y));
+
+        // this.camera.viewport = this.camera.target;
+
+        // Test if collider hit.
+        Physics.colliders.forEach((collider: Collider) => {
+            let worldCoords = worldToScreen(this.camera, collider.transform.x, collider.transform.y);
+            this.context.strokeRect(worldCoords.x, worldCoords.y, collider.transform.width, collider.transform.height);
+
+            if (areTransformsOverlapping(this.camera.target, new Transform(worldCoords.x, worldCoords.y, 32, 32))) {
+                collider.isTriggered = true;
+                collider.onCollisionEnter();
+            }
+            else {
+                if (collider.isTriggered) {
+                    collider.isTriggered = false;
+                    collider.onCollisionLeave();
+                }
+            }
+        })
     }
 
     render() {
@@ -130,7 +201,7 @@ export default class Graphics {
         this.spriteRenderer.run();
         this.uiFragmentsRender.run();
 
-        this.resizeCanvas();
+        // this.resizeCanvas();
     }
 
     /**
@@ -215,8 +286,8 @@ export default class Graphics {
                 Logger.data(this.fragments.spriteFragments);
             }
             else {
-                Logger.info('we hit on mouse up with a non empty transform');
-                Logger.data(this.selectionTransform);
+                // Logger.info('we hit on mouse up with a non empty transform');
+                // Logger.data(this.selectionTransform);
 
                 if (this.isSelectionMode) {
                     // this.openContextMenu(new Point(this.mousePosition.x, this.mousePosition.y));

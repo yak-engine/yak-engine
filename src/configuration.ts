@@ -13,5 +13,5 @@ export default class Configuration {
     /**
      * The background fill that immediately fill the canvas area after the clearCanvas method to called in the draw method.
      */
-    public static canvasFill: string = '#09161D';
+    public static canvasFill: string = '#181818';
 }
