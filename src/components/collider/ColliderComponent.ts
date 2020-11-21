@@ -1,19 +1,15 @@
-import Entity from "../../entity";
 import Point from "../../primitives/Point";
 import Transform from "../../primitives/transform";
 
-export default abstract class Collider extends Entity {
+export default class ColliderComponent {
     isTrigger: boolean = false;
     isTriggered: boolean = false;
 
     points: Array<Point> = new Array();
 
-    abstract onCollisionEnter(): void;
-    abstract onCollisionLeave(): void;
+    transform: Transform;
 
     constructor(transform: Transform) {
-        super();
-
         this.transform = transform;
 
         // Top left.

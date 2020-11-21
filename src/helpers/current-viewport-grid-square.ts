@@ -1,11 +1,11 @@
 import Point from "../primitives/Point";
 import Configuration from "../configuration";
 
-export default function currentViewportGridCoordinates(mousePosition: Point): Point {
+export default function pointWorldPosition(point: Point): Point {
     let gridCoordinates = new Point(0, 0);
     
-    gridCoordinates.x = Math.floor(mousePosition.x / Configuration.gridSquareSize);
-    gridCoordinates.y = Math.floor(mousePosition.y / Configuration.gridSquareSize);
+    gridCoordinates.x = Math.floor(point.x / Configuration.gridSquareSize);
+    gridCoordinates.y = Math.floor(point.y / Configuration.gridSquareSize);
 
     return gridCoordinates;
 }

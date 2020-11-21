@@ -1,14 +1,14 @@
 import { uiConstants } from "../constants";
-import Graphics from "../graphics/graphics";
+import Renderer from "../graphics/renderer";
 import isCoordinateContained from "../helpers/is-coordinate-contained";
 import Point from "../primitives/Point";
 import Button from "./button";
 import UIFragment from "./ui-base";
 
 export default class UIFragmentsRenderer {
-    graphics: Graphics;
+    graphics: Renderer;
 
-    constructor(canvas: Graphics) {
+    constructor(canvas: Renderer) {
         this.graphics = canvas;
     }
 

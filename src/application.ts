@@ -1,12 +1,19 @@
 import Scaffold from './scaffold';
-import Graphics from './graphics/graphics';
+import Renderer from './graphics/renderer';
 import Time from './time';
 import SceneManager from './scene-manager';
 import { Logger } from './logging/logger';
 import Tileset from './graphics/tileset';
 import Input from './graphics/input';
+import Physics from './physics/physics';
+import Collider from './physics/collision/collider';
+import worldToScreen from './helpers/world-to-screen';
+import areTransformsOverlapping from './helpers/are-transforms-overlapping';
+import Transform from './primitives/transform';
+import ColliderComponentManager from './components/collider/ColliderComponentManager';
+import ColliderComponent from './components/collider/ColliderComponent';
 
-export default class Application {
+export default abstract class Application {
     /**
      * Contains basic configurable fields that are set before the application begins.
      */
@@ -15,7 +22,7 @@ export default class Application {
     /**
      * Contains the rendering functionality from the main loop.
      */
-    graphics: Graphics = new Graphics();
+    renderer: Renderer = new Renderer();
 
     input: Input;
 
@@ -29,21 +36,21 @@ export default class Application {
      */
     start(): void {
         fetch('./bundle/scaffold.json').then((response) => response.json()).then(async (scaffold: Scaffold) => {
-            this.graphics.scene = await SceneManager.load(scaffold.scenes[0]);
-
-            Logger.data(this.graphics.scene);
+            this.renderer.scene = await SceneManager.load(scaffold.scenes[0]);
 
             let loadedTilesets = 0;
-            
-            this.graphics.scene.tilesets.forEach((tilesetPath: string) => {
+
+            this.renderer.scene.tilesets.forEach((tilesetPath: string) => {
                let image = new Image();
 
                image.onload = () => {
-                   this.graphics.tilesets.push(new Tileset(image));
+                   this.renderer.tilesets.push(new Tileset(image));
                    
                    loadedTilesets++;
 
-                    if (loadedTilesets === this.graphics.scene.tilesets.length) {
+                    if (loadedTilesets === this.renderer.scene.tilesets.length) {
+                        this.renderer.init();
+                        this.ready();
                         window.requestAnimationFrame((time: number) => this.mainLoop(time));
                     }
                }
@@ -68,11 +75,39 @@ export default class Application {
     mainLoop(time: number) {
         window.requestAnimationFrame((time: number) => this.mainLoop(time));
 
+        // Calculate delta time for update method.
         Time.calculateDeltaTime(time);
 
-        this.graphics.context.clearRect(0, 0, this.graphics.getCanvasWidth(), this.graphics.getCanvasHeight());
-        
-        this.graphics.render();
-        this.graphics.update(Time.deltaTime);
+        // Call the update method. Implemented by the consuming class.
+        this.update(Time.deltaTime);
+
+
+        (<ColliderComponentManager>ColliderComponentManager.getInstance()).colliders.forEach((collider: ColliderComponent, index: number) => {
+            // if (areTransformsOverlapping(collider.transform, )) {
+
+            // }
+        })
+
+        // Physics.colliders.forEach((collider: Collider) => {
+        //     let worldCoords = worldToScreen(this.renderer.mainCamera, collider.transform.x, collider.transform.y);
+        //     this.renderer.context.strokeRect(worldCoords.x, worldCoords.y, collider.transform.width, collider.transform.height);
+
+        //     if (areTransformsOverlapping(player transfrom, new Transform(worldCoords.x, worldCoords.y, 32, 32))) {
+        //         collider.isTriggered = true;
+        //         collider.onCollisionEnter();
+        //     }
+        //     else {
+        //         if (collider.isTriggered) {
+        //             collider.isTriggered = false;
+        //             collider.onCollisionLeave();
+        //         }
+        //     }
+        // })
+
+        // The main render call.
+        this.renderer.draw();
     }
+
+    abstract ready(): void;
+    abstract update(deltaTime: number): void;
 }

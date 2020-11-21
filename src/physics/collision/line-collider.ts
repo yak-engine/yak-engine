@@ -1,22 +1,22 @@
-import Point from "../../primitives/Point";
-import Collider from "./collider";
+// import Point from "../../primitives/Point";
+// import Collider from "./collider";
 
-export default class LineCollider extends Collider {
-    startPoint: Point;
-    endPoint: Point;
+// export default class LineCollider extends Collider {
+//     startPoint: Point;
+//     endPoint: Point;
 
-    constructor(startPoint: Point, endPoint: Point) {
-        super();
+//     constructor(startPoint: Point, endPoint: Point) {
+//         super();
 
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
-    }
+//         this.startPoint = startPoint;
+//         this.endPoint = endPoint;
+//     }
 
-    public onCollisionEnter(): void {
+//     public onCollisionEnter(): void {
 
-    }
+//     }
 
-    public onCollisionLeave(): void {
+//     public onCollisionLeave(): void {
         
-    }
-}
+//     }
+// }

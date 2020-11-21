@@ -1,10 +1,14 @@
+import Camera from "../graphics/camera";
 import { Logger } from "../logging/logger";
 
 export default class Transform {
     x: number;
     y: number;
+
     width: number;
     height: number;
+
+    fillStyle: string;
 
     constructor(x: number, y: number, width: number, height: number) {
         this.x = x;
@@ -13,12 +17,36 @@ export default class Transform {
         this.height = height;
     }
 
-    clampX(min: number, maxLowerRange: number, maxUpperRange: number): void {
-        this.x = Math.max(min, Math.min(maxLowerRange, maxUpperRange));  
+    getScreenX(camera: Camera): number {
+        return this.x - camera.viewport.x;
     }
 
-    clampY(min: number, maxLowerRange: number, maxUpperRange: number): void {
-        this.y = Math.max(min, Math.min(maxLowerRange, maxUpperRange)); 
+    // clampX(min: number, maxLowerRange: number, maxUpperRange: number): void {
+    //     this.x = Math.max(min, Math.min(maxLowerRange, maxUpperRange));  
+    // }
+
+    clampX(min: number, max: number): void {
+        if (this.x < min) {
+            this.x = min;
+            return;
+        }
+
+        if (this.x > max) {
+            this.x = max;
+            return;
+        }
+    }
+
+    clampY(min: number, max: number): void {
+        if (this.y < min) {
+            this.y = min;
+            return;
+        }
+
+        if (this.y > max) {
+            this.y = max;
+            return;
+        }
     }
 
     /**

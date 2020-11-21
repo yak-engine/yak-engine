@@ -1,3 +1,4 @@
+import ComponentManager from "./components/ComponentManager";
 import Transform from "./primitives/transform";
 
 /**
@@ -11,7 +12,8 @@ export default class Entity {
     /**
      * Generates a unique 12 character ID for each entity.
      */
-    id: string = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 12);
+    // id: string = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 12);
+    id: number = 0; // Refactored to number for ECS.
 
     /**
      * Determines if the entity should be rendered.
@@ -23,4 +25,12 @@ export default class Entity {
      * well as the width and height of the entity.
      */
     transform: Transform = new Transform(0, 0, 0, 0);
+
+    public addComponent<TComponent>(component: TComponent, componentManager: typeof ComponentManager): void {
+        componentManager.getInstance().tryAdd(this);
+    }
+
+    public getComponent<TComponent>(): TComponent {
+        return null;
+    }
 }
