@@ -14,7 +14,7 @@ export default abstract class Collider extends Entity {
     constructor(transform: Transform) {
         super();
 
-        this.transform = transform;
+        // this.transform = transform;
 
         // Top left.
         this.points.push(new Point(transform.x, transform.y));

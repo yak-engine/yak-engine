@@ -1,7 +1,8 @@
 import Point from "../../primitives/Point";
 import Transform from "../../primitives/transform";
+import Component from "../Component";
 
-export default class ColliderComponent {
+export default class ColliderComponent extends Component {
     isTrigger: boolean = false;
     isTriggered: boolean = false;
 
@@ -9,8 +10,11 @@ export default class ColliderComponent {
 
     transform: Transform;
 
-    constructor(transform: Transform) {
+    constructor(transform: Transform, isTrigger: boolean = false) {
+        super();
+
         this.transform = transform;
+        this.isTrigger = isTrigger;
 
         // Top left.
         this.points.push(new Point(transform.x, transform.y));

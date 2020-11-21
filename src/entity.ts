@@ -1,4 +1,4 @@
-import ComponentManager from "./components/ComponentManager";
+import ManagerFactory from "./components/ManagerFactory";
 import Transform from "./primitives/transform";
 
 /**
@@ -20,17 +20,13 @@ export default class Entity {
      */
     isEnabled: boolean = true;
 
-    /**
-     * Contains the position data for the entity. Includes the x and y coordinates as
-     * well as the width and height of the entity.
-     */
-    transform: Transform = new Transform(0, 0, 0, 0);
-
-    public addComponent<TComponent>(component: TComponent, componentManager: typeof ComponentManager): void {
-        componentManager.getInstance().tryAdd(this);
+    public addComponent<TComponent>(component: TComponent): void {
+        let manager = ManagerFactory.get(component.constructor.name);
+        manager.addComponentInstance(this, component);
     }
 
-    public getComponent<TComponent>(): TComponent {
-        return null;
+    public getComponent<TComponent>(componentName: string): TComponent {
+        let manager = ManagerFactory.get(componentName);
+        return <TComponent>manager.data[this.id];
     }
 }

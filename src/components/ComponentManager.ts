@@ -1,26 +1,20 @@
 import Entity from "../entity";
+import Component from "./Component";
 
 export default class ComponentManager {
-    private static instance: ComponentManager;
-
-    public static getInstance(): ComponentManager {
-        if (!ComponentManager.instance) {
-            ComponentManager.instance = new ComponentManager();
-        }
-
-        return ComponentManager.instance;
-    }
-
     entities: Array<Entity> = new Array();
+    data: Array<Component> = new Array();
 
-    tryAdd(entity: Entity): void {
+    addComponentInstance(entity: Entity, component: Component): void {
         let index = this.entities.findIndex(x => x.id === entity.id);
 
         if (index === -1) {
             this.entities.push(entity);
         }
         else {
-            throw "Entity already has component.";
+            throw "Entity alread has a collider component assigned.";
         }
+
+        this.data.push(component);
     }
 }

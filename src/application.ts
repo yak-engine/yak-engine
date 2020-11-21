@@ -5,13 +5,11 @@ import SceneManager from './scene-manager';
 import { Logger } from './logging/logger';
 import Tileset from './graphics/tileset';
 import Input from './graphics/input';
-import Physics from './physics/physics';
-import Collider from './physics/collision/collider';
-import worldToScreen from './helpers/world-to-screen';
 import areTransformsOverlapping from './helpers/are-transforms-overlapping';
-import Transform from './primitives/transform';
-import ColliderComponentManager from './components/collider/ColliderComponentManager';
 import ColliderComponent from './components/collider/ColliderComponent';
+import ManagerFactory from './components/ManagerFactory';
+import TransformComponent from './components/transform/TransformComponent';
+import TransformComponentManager from './components/transform/TransformComponentManager';
 
 export default abstract class Application {
     /**
@@ -27,6 +25,11 @@ export default abstract class Application {
     input: Input;
 
     scaffold: Scaffold;
+
+    constructor() {
+        // Register required component.
+        ManagerFactory.register(TransformComponent.name, TransformComponentManager)
+    }
 
     /**
      * Actually begins the game instance. Processes the configuration.
@@ -81,28 +84,30 @@ export default abstract class Application {
         // Call the update method. Implemented by the consuming class.
         this.update(Time.deltaTime);
 
+        // TODO: Replace this with a more robust collision dection implementation. For now this is fine for the number of sprites we are rendering with colliders.
+        ManagerFactory.get(ColliderComponent.name).data.forEach((colliderComponent: ColliderComponent, colliderIndex: number) => {
+            ManagerFactory.get(ColliderComponent.name).data.forEach((targetCollider: ColliderComponent, targetIndex: number) => {
+                if (colliderIndex !== targetIndex) {
+                    if (areTransformsOverlapping(colliderComponent.transform, targetCollider.transform)) {
+                        console.log('collider hit');
+                    }
+                }
 
-        (<ColliderComponentManager>ColliderComponentManager.getInstance()).colliders.forEach((collider: ColliderComponent, index: number) => {
-            // if (areTransformsOverlapping(collider.transform, )) {
+                // if (colliderIndex !== targetIndex && areTransformsOverlapping(colliderComponent.transform, targetCollider.transform)) {
+                //     if (targetCollider.isTrigger) {
+                //         console.log('inside trigger');
+                //     }
+                //     else {
+                //         let horizontal = Input.horizontal();
 
-            // }
-        })
-
-        // Physics.colliders.forEach((collider: Collider) => {
-        //     let worldCoords = worldToScreen(this.renderer.mainCamera, collider.transform.x, collider.transform.y);
-        //     this.renderer.context.strokeRect(worldCoords.x, worldCoords.y, collider.transform.width, collider.transform.height);
-
-        //     if (areTransformsOverlapping(player transfrom, new Transform(worldCoords.x, worldCoords.y, 32, 32))) {
-        //         collider.isTriggered = true;
-        //         collider.onCollisionEnter();
-        //     }
-        //     else {
-        //         if (collider.isTriggered) {
-        //             collider.isTriggered = false;
-        //             collider.onCollisionLeave();
-        //         }
-        //     }
-        // })
+                //         if (horizontal > 0) {
+                //             console.log('hit when moving right');
+                //             colliderComponent.transform.x = targetCollider.transform.x;
+                //         }
+                //     }
+                // }
+            })
+        });
 
         // The main render call.
         this.renderer.draw();

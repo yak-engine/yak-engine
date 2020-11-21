@@ -9,8 +9,6 @@ import Configuration from "../configuration";
 import Scene from "./scene";
 import Camera from "./camera";
 import Input from "./input";
-import Physics from "../physics/physics";
-import SquareCollider from "../physics/collision/square-collider";
 import isTransformEmpty from "../helpers/is-transform-empty";
 
 export default class Renderer {
@@ -65,12 +63,24 @@ export default class Renderer {
      */
     public selectionTransform: Transform = new Transform(0, 0, 0, 0);
 
+    /**
+     * The current scene being rendered.
+     */
     public scene: Scene;
 
+    /**
+     * The tilesets being used for the current scene. Get loaded on startup.
+     */
     public tilesets: Array<Tileset> = new Array();
 
+    /**
+     * The main scene camera this is always here.
+     */
     public mainCamera: Camera = new Camera();
 
+    /**
+     * Main input tracking class.
+     */
     public input: Input = new Input();
 
     /**
@@ -144,7 +154,7 @@ export default class Renderer {
         this.fragments.transformFragments.forEach((transform: Transform) => {
             this.context.fillStyle = transform.fillStyle;
             this.context.fillRect(transform.x, transform.y, transform.width, transform.height);
-        })
+        });
     }
 
     /**

@@ -2,11 +2,13 @@ import Application from "./src/application";
 import ColliderComponent from "./src/components/collider/ColliderComponent";
 import ColliderComponentManager from "./src/components/collider/ColliderComponentManager";
 import EntityManager from "./src/components/EntityManager";
-import MaterialComponent from "./src/components/MaterialComponent";
-import MaterialComponentManager from "./src/components/MaterialComponentManager";
+import ManagerFactory from "./src/components/ManagerFactory";
+import TransformComponent from "./src/components/transform/TransformComponent";
 import Entity from "./src/entity";
 import Input from "./src/graphics/input";
+import { Logger } from "./src/logging/logger";
 import Transform from "./src/primitives/transform";
+import Time from "./src/time";
 
 export default class Demo extends Application {
     public testSpeed: number = 400;
@@ -15,6 +17,9 @@ export default class Demo extends Application {
 
     constructor() {
         super();
+
+        ManagerFactory.register(ColliderComponent.name, ColliderComponentManager);
+
         this.start();
     }
 
@@ -25,22 +30,60 @@ export default class Demo extends Application {
         this.player.fillStyle = 'white';
         this.renderer.fragments.transformFragments.push(this.player);
 
-        playerEntity.addComponent<MaterialComponent>(new MaterialComponent('yellow'), MaterialComponentManager);
-        playerEntity.addComponent<ColliderComponent>(new ColliderComponent(this.player), ColliderComponentManager);
+        playerEntity.addComponent<ColliderComponent>(new ColliderComponent(this.player));
+
+        Logger.data(playerEntity);
 
         // Seed demo enemies
         for (let i = 0; i < 5; i++) {
-            let transform: Transform = Transform.empty;
+            let enemyEntity: Entity = EntityManager.getInstance().create();
 
+            let transform: Transform = Transform.empty;
             transform.x = Math.floor(Math.random() * this.renderer.getCanvasWidth());
             transform.y = Math.floor(Math.random() * this.renderer.getCanvasHeight());
             transform.width = 32;
             transform.height = 32;
             transform.fillStyle = '#DB4F42';
 
+            enemyEntity.addComponent<ColliderComponent>(new ColliderComponent(transform));
+
+            Logger.data(enemyEntity.getComponent(ColliderComponent.name));
+
             this.renderer.fragments.transformFragments.push(transform);
         }
+
+        for (let i = 0; i < 5; i++) {
+            let coinEntity: Entity = EntityManager.getInstance().create();
+
+            let transform: Transform = Transform.empty;
+            transform.x = Math.floor(Math.random() * this.renderer.getCanvasWidth());
+            transform.y = Math.floor(Math.random() * this.renderer.getCanvasHeight());
+            transform.width = 32;
+            transform.height = 32;
+            transform.fillStyle = '#FFCD43';
+
+            coinEntity.addComponent<ColliderComponent>(new ColliderComponent(transform, true));
+
+            Logger.data(coinEntity.getComponent(ColliderComponent.name));
+
+            this.renderer.fragments.transformFragments.push(transform);
+        }
+
+        this.exitEntity = EntityManager.getInstance().create();
+
+        let transform: Transform = (<TransformComponent>this.exitEntity.getComponent(TransformComponent.name)).transform;
+        transform.x = Math.floor(Math.random() * this.renderer.getCanvasWidth());
+        transform.y = Math.floor(Math.random() * this.renderer.getCanvasHeight());
+        transform.width = 32;
+        transform.height = 32;
+        transform.fillStyle = 'blue';
+
+        this.exitEntity.addComponent<ColliderComponent>(new ColliderComponent(transform, true));
+
+        this.renderer.fragments.transformFragments.push(transform);
     }
+
+    exitEntity: Entity;
 
     update(deltaTime: number): void {
         this.renderer.context.fillStyle = 'red';
@@ -83,7 +126,25 @@ export default class Demo extends Application {
             this.renderer.mainCamera.viewport.y += vertical * this.testSpeed;
             this.renderer.mainCamera.viewport.y = Math.max(0, Math.min(this.renderer.mainCamera.viewport.y, this.renderer.mainCamera.max.y));
         }
+
+        // Sample motion.
+        let transform = (<TransformComponent>this.exitEntity.getComponent(TransformComponent.name)).transform;
+
+        console.log(transform);
+
+        transform.x += Time.deltaTime * 500;
+        transform.clampX(0, this.renderer.getCanvasWidth() - 200);
+
+        var newX = 100 * Math.cos(this.angle * (Math.PI / 180));
+        var newY = 100 * Math.sin(this.angle * (Math.PI / 180));
+
+        transform.x = newX + 200;
+        transform.y = newY + 200;
+
+        this.angle += 1;
     }
+
+    angle: number = 0;
 }
 
 let demo = new Demo();

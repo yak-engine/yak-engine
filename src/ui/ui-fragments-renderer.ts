@@ -29,7 +29,7 @@ export default class UIFragmentsRenderer {
                     this.graphics.context.fillStyle = uiFragment.backgroundColor;
                 }
 
-                this.graphics.context.fillRect(uiFragment.transform.x, uiFragment.transform.y, uiFragment.transform.width, uiFragment.transform.height);
+                // this.graphics.context.fillRect(uiFragment.transform.x, uiFragment.transform.y, uiFragment.transform.width, uiFragment.transform.height);
                 this.graphics.context.closePath(); 
 
                 switch(uiFragment.constructor.name) {
@@ -38,8 +38,8 @@ export default class UIFragmentsRenderer {
                         this.graphics.context.fillStyle = 'white';
                         this.graphics.context.textAlign = 'center';
                         this.graphics.context.textBaseline = 'middle';
-                        let x = uiFragment.transform.x + (uiFragment.transform.width / 2);
-                        let y = uiFragment.transform.y + (uiFragment.transform.height / 2);
+                        let x = 0; //uiFragment.transform.x + (uiFragment.transform.width / 2);
+                        let y = 0; //uiFragment.transform.y + (uiFragment.transform.height / 2);
                         this.graphics.context.fillText((<Button>uiFragment).text, x, y);
                         break;
                     default:
@@ -52,18 +52,18 @@ export default class UIFragmentsRenderer {
     private processInteractables(): void {
         this.graphics.fragments.uiFragments.forEach((uiFragment: UIFragment) => {
             // If the fragment is not interactive simply check the position check.
-            if (uiFragment.isInteractive) {
-                if (isCoordinateContained(this.graphics.mousePosition, uiFragment.transform)) {
-                    uiFragment.isHovered = true;
+            // if (uiFragment.isInteractive) {
+            //     if (isCoordinateContained(this.graphics.mousePosition, uiFragment.transform)) {
+            //         uiFragment.isHovered = true;
 
-                    if (uiFragment.onHover) {
-                        uiFragment.onHover();
-                    }
-                }
-                else if (uiFragment.isHovered) {
-                    uiFragment.isHovered = false;
-                }
-            }
+            //         if (uiFragment.onHover) {
+            //             uiFragment.onHover();
+            //         }
+            //     }
+            //     else if (uiFragment.isHovered) {
+            //         uiFragment.isHovered = false;
+            //     }
+            // }
         });
     }
 

@@ -23,10 +23,10 @@ abstract class UIFragment extends Entity {
     constructor(x: number, y: number, width: number, height: number) {
         super();
 
-        this.transform.x = x;
-        this.transform.y = y;
-        this.transform.width = width;
-        this.transform.height = height;
+        // this.transform.x = x;
+        // this.transform.y = y;
+        // this.transform.width = width;
+        // this.transform.height = height;
     }
 }
 

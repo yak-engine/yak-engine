@@ -7,9 +7,9 @@ export default class SquareCollider extends Collider {
     points: Array<Point> = new Array();
 
     constructor(transform: Transform) {
-        super();
+        super(transform);
 
-        this.transform = transform;
+        // this.transform = transform;
 
         // Top left.
         this.points.push(new Point(transform.x, transform.y));
