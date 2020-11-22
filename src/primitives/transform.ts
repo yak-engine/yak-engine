@@ -49,6 +49,14 @@ export default class Transform {
         }
     }
 
+    offsetX(): number {
+        return this.x + this.width;
+    }
+
+    offsetY(): number {
+        return this.y + this.height;
+    }
+
     /**
      * Returns a new empty transform object. Meaning the x, y, width, and height
      * values are all zero.

@@ -4,7 +4,7 @@ import Component from "../Component";
 
 export default class ColliderComponent extends Component {
     isTrigger: boolean = false;
-    isTriggered: boolean = false;
+    isColliding: boolean =false;
 
     points: Array<Point> = new Array();
 

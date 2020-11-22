@@ -28,8 +28,6 @@ export default class Entity {
     public getComponent<TComponent>(componentName: string): TComponent {
         let manager = ManagerFactory.get(componentName);
 
-        console.log(manager.entityDataMap);
-
         if (manager.entityDataMap.has(this.id)) {
             return <TComponent>manager.data[manager.entityDataMap.get(this.id)];
         }

@@ -5,7 +5,6 @@ import SceneManager from './scene-manager';
 import { Logger } from './logging/logger';
 import Tileset from './graphics/tileset';
 import Input from './graphics/input';
-import areTransformsOverlapping from './helpers/are-transforms-overlapping';
 import ColliderComponent from './components/collider/ColliderComponent';
 import ManagerFactory from './components/ManagerFactory';
 import TransformComponent from './components/transform/TransformComponent';
@@ -17,6 +16,9 @@ import MaterialComponent from './components/material/MaterialComponent';
 import TileMapComponent from './components/tile-map/TileMapComponent';
 import TileMapComponentManager from './components/tile-map/TileMapComponentManager';
 import ColliderComponentManager from './components/collider/ColliderComponentManager';
+import CollisionSystem from './systems/collision-system';
+import TagComponent from './components/tag/TagComponent';
+import TagComponentManager from './components/tag/TagComponentManager';
 
 export default abstract class Application {
     /**
@@ -29,12 +31,15 @@ export default abstract class Application {
      */
     renderer: Renderer = new Renderer();
 
+    collision: CollisionSystem = new CollisionSystem();
+
     input: Input;
 
     scaffold: Scaffold;
 
     constructor() {
         // Register required component.
+        ManagerFactory.register(TagComponent.name, TagComponentManager);
         ManagerFactory.register(TransformComponent.name, TransformComponentManager);
         ManagerFactory.register(MaterialComponent.name, MaterialComponentManager);
         ManagerFactory.register(SpriteRendererComponent.name, SpriteRendererComponentManager);
@@ -95,16 +100,8 @@ export default abstract class Application {
         // Call the update method. Implemented by the consuming class.
         this.update(Time.deltaTime);
 
-        // TODO: Replace this with a more robust collision dection implementation. For now this is fine for the number of sprites we are rendering with colliders.
-        ManagerFactory.get(ColliderComponent.name).data.forEach((colliderComponent: ColliderComponent, colliderIndex: number) => {
-            ManagerFactory.get(ColliderComponent.name).data.forEach((targetCollider: ColliderComponent, targetIndex: number) => {
-                if (colliderIndex !== targetIndex) {
-                    if (areTransformsOverlapping(colliderComponent.transform, targetCollider.transform)) {
-                        console.log('collider hit');
-                    }
-                }
-            })
-        });
+        // Run the systems between the update and draw calls.
+        this.collision.run();
 
         // The main render call.
         this.renderer.draw();

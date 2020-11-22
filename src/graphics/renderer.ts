@@ -119,8 +119,6 @@ export default class Renderer {
 
         // Run through renderer system.
         EntityManager.getInstance().entities.forEach((entity: Entity) => {
-            // console.log(entity.id);
-
             let spriteRendererComponent = entity.getComponent<SpriteRendererComponent>(SpriteRendererComponent.name);
 
             if (spriteRendererComponent) {
@@ -134,8 +132,6 @@ export default class Renderer {
                 let transform = entity.getComponent<TransformComponent>(TransformComponent.name).transform;
 
                 if (spriteRendererComponent.row !== undefined) {
-                    console.log(entity.id);
-
                     this.context.drawImage(
                         this.tilesets[spriteRendererComponent.layer].image,
                         spriteRendererComponent.column * this.scene.spriteSize,
@@ -156,16 +152,6 @@ export default class Renderer {
             // Reset renderer context to default values.
             this.context.fillStyle = Configuration.canvasFill;
             this.context.globalAlpha = 1;
-        });
-
-        // Run through tile map system.
-        let manager = <TileMapComponentManager>ManagerFactory.get(TileMapComponent.name);
-        // manager.entities
-
-        // manager.data.forEach
-
-        ManagerFactory.get(SpriteRendererComponent.name).data.forEach((spriteRendererComponent: SpriteRendererComponent) => {
-            
         });
         
         this.uiFragmentsRender.run();

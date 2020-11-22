@@ -6,6 +6,7 @@ import ManagerFactory from "./src/components/ManagerFactory";
 import MaterialComponent from "./src/components/material/MaterialComponent";
 import SpriteRendererComponent from "./src/components/sprite-renderer/SpriteRendererComponent";
 import SpriteRendererComponentManager from "./src/components/sprite-renderer/SpriteRendererComponentManager";
+import TagComponent from "./src/components/tag/TagComponent";
 import TileMapComponent from "./src/components/tile-map/TileMapComponent";
 import TransformComponent from "./src/components/transform/TransformComponent";
 import TransformComponentManager from "./src/components/transform/TransformComponentManager";
@@ -36,6 +37,8 @@ export default class Demo extends Application {
         console.log(tileMap);
 
         this.playerEntity = EntityManager.getInstance().create();
+
+        this.playerEntity.getComponent<TagComponent>(TagComponent.name).name = 'player';
 
         // Transform is a required component for now.
         this.playerTransform = this.playerEntity.getComponent<TransformComponent>(TransformComponent.name).transform;

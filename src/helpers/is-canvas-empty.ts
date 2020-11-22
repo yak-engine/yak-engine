@@ -1,5 +1,3 @@
-import { Logger } from "../logging/logger";
-
 /**
  * Iterates the image data of the canvas to determine if the canvas
  * is empty or not.

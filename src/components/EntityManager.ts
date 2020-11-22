@@ -1,5 +1,6 @@
 import Entity from "../entity";
 import Transform from "../primitives/transform";
+import TagComponent from "./tag/TagComponent";
 import TransformComponent from "./transform/TransformComponent";
 
 export default class EntityManager {
@@ -30,6 +31,7 @@ export default class EntityManager {
     }
 
     private addRequiredComponents(entity: Entity): void {
+        entity.addComponent<TagComponent>(new TagComponent());
         entity.addComponent<TransformComponent>(new TransformComponent(Transform.empty));
     }
 }
