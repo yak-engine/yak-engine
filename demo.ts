@@ -3,7 +3,12 @@ import ColliderComponent from "./src/components/collider/ColliderComponent";
 import ColliderComponentManager from "./src/components/collider/ColliderComponentManager";
 import EntityManager from "./src/components/EntityManager";
 import ManagerFactory from "./src/components/ManagerFactory";
+import MaterialComponent from "./src/components/material/MaterialComponent";
+import SpriteRendererComponent from "./src/components/sprite-renderer/SpriteRendererComponent";
+import SpriteRendererComponentManager from "./src/components/sprite-renderer/SpriteRendererComponentManager";
+import TileMapComponent from "./src/components/tile-map/TileMapComponent";
 import TransformComponent from "./src/components/transform/TransformComponent";
+import TransformComponentManager from "./src/components/transform/TransformComponentManager";
 import Entity from "./src/entity";
 import Input from "./src/graphics/input";
 import { Logger } from "./src/logging/logger";
@@ -13,26 +18,40 @@ import Time from "./src/time";
 export default class Demo extends Application {
     public testSpeed: number = 400;
     
-    public player: Transform;
+    public playerEntity: Entity;
+    public playerTransform: Transform;
 
     constructor() {
         super();
 
-        ManagerFactory.register(ColliderComponent.name, ColliderComponentManager);
+
 
         this.start();
     }
 
     ready(): void {
-        let playerEntity: Entity = EntityManager.getInstance().create();
+        let tileMap: Entity = EntityManager.getInstance().create();
+        tileMap.addComponent<TileMapComponent>(new TileMapComponent());
 
-        this.player = new Transform(this.renderer.getCanvasWidth() / 2, this.renderer.getCanvasHeight() / 2, 32, 32);
-        this.player.fillStyle = 'white';
-        this.renderer.fragments.transformFragments.push(this.player);
+        console.log(tileMap);
 
-        playerEntity.addComponent<ColliderComponent>(new ColliderComponent(this.player));
+        this.playerEntity = EntityManager.getInstance().create();
 
-        Logger.data(playerEntity);
+        // Transform is a required component for now.
+        this.playerTransform = this.playerEntity.getComponent<TransformComponent>(TransformComponent.name).transform;
+
+        console.log(this.playerTransform);
+
+        this.playerTransform.x = this.renderer.getCanvasWidth() / 2;
+        this.playerTransform.y = this.renderer.getCanvasHeight() / 2;
+        this.playerTransform.width = 32;
+        this.playerTransform.height = 32;
+
+        console.log(this.playerEntity.getComponent<TransformComponent>(TransformComponent.name).transform);
+
+        this.playerEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(this.playerTransform, 0, 0, 128, 5));
+        this.playerEntity.addComponent<ColliderComponent>(new ColliderComponent(this.playerTransform));
+        this.playerEntity.addComponent<MaterialComponent>(new MaterialComponent('transparent', 0.5));
 
         // Seed demo enemies
         for (let i = 0; i < 5; i++) {
@@ -55,18 +74,18 @@ export default class Demo extends Application {
         for (let i = 0; i < 5; i++) {
             let coinEntity: Entity = EntityManager.getInstance().create();
 
-            let transform: Transform = Transform.empty;
-            transform.x = Math.floor(Math.random() * this.renderer.getCanvasWidth());
-            transform.y = Math.floor(Math.random() * this.renderer.getCanvasHeight());
-            transform.width = 32;
-            transform.height = 32;
-            transform.fillStyle = '#FFCD43';
+            let coinTransform = coinEntity.getComponent<TransformComponent>(TransformComponent.name).transform;
+            coinTransform.x = Math.floor(Math.random() * this.renderer.getCanvasWidth());
+            coinTransform.y = Math.floor(Math.random() * this.renderer.getCanvasHeight());
+            coinTransform.width = 32;
+            coinTransform.height = 32;
 
-            coinEntity.addComponent<ColliderComponent>(new ColliderComponent(transform, true));
+            coinEntity.addComponent<ColliderComponent>(new ColliderComponent(coinTransform, true));
+            coinEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(coinTransform, 0, 0, 107, 6));
 
             Logger.data(coinEntity.getComponent(ColliderComponent.name));
 
-            this.renderer.fragments.transformFragments.push(transform);
+            // this.renderer.fragments.transformFragments.push(transform);
         }
 
         this.exitEntity = EntityManager.getInstance().create();
@@ -81,56 +100,65 @@ export default class Demo extends Application {
         this.exitEntity.addComponent<ColliderComponent>(new ColliderComponent(transform, true));
 
         this.renderer.fragments.transformFragments.push(transform);
+
+        let manager = <TransformComponentManager>ManagerFactory.get(TransformComponent.name);
+        console.log(manager);
+
+        let t = <SpriteRendererComponentManager>ManagerFactory.get(SpriteRendererComponent.name);
+        console.log(t);
     }
 
     exitEntity: Entity;
 
     update(deltaTime: number): void {
-        this.renderer.context.fillStyle = 'red';
-        this.renderer.context.fillRect(this.player.x, this.player.y, 32, 32);
+        // this.renderer.context.fillStyle = 'red';
+        // this.renderer.context.fillRect(this.player.x, this.player.y, 32, 32);
 
+        // TODO: Add back with reference to player removed.
         let horizontal = Input.horizontal();
         let vertical = Input.vertical();
 
         if (horizontal !== 0) {
             let movementX = horizontal * this.testSpeed;
-            this.player.x += movementX;
+            this.playerTransform.x += movementX;
 
             if (this.renderer.mainCamera.viewport.x > (this.renderer.mainCamera.viewport.width - 100)) {
-                this.player.clampX(0, this.renderer.mainCamera.viewport.width - this.renderer.scene.spriteSize);
+                this.playerTransform.clampX(0, this.renderer.mainCamera.viewport.width - this.renderer.scene.spriteSize);
             }
             else {
-                this.player.clampX(0, this.renderer.mainCamera.viewport.width - 100);
+                this.playerTransform.clampX(0, this.renderer.mainCamera.viewport.width);
             }
         }
 
         if (vertical !== 0) {
             let movementY = vertical * this.testSpeed;
-            this.player.y += movementY;
-            this.player.y = Math.max(0, Math.min(this.player.y, this.renderer.scene.rows * this.renderer.scene.spriteSize - 32));
+            this.playerTransform.y += movementY;
+            this.playerTransform.y = Math.max(0, Math.min(this.playerTransform.y, this.renderer.scene.rows * this.renderer.scene.spriteSize - 32));
 
             if (this.renderer.mainCamera.viewport.y > (this.renderer.mainCamera.viewport.height - 100)) {
-                this.player.clampY(0, this.renderer.mainCamera.viewport.height - this.renderer.scene.spriteSize);
+                this.playerTransform.clampY(0, this.renderer.mainCamera.viewport.height - this.renderer.scene.spriteSize);
             }
             else {
-                this.player.clampY(0, this.renderer.mainCamera.viewport.height - 100);
+                this.playerTransform.clampY(0, this.renderer.mainCamera.viewport.height - 100);
             }
         }
 
-        if (this.player.x >= this.renderer.mainCamera.viewport.width - 100 || this.player.x < 100) {
+        if (this.playerTransform.x >= this.renderer.mainCamera.viewport.width - 100 || this.playerTransform.x < 100) {
             this.renderer.mainCamera.viewport.x += horizontal * this.testSpeed;
             this.renderer.mainCamera.viewport.x = Math.max(0, Math.min(this.renderer.mainCamera.viewport.x, this.renderer.mainCamera.max.x));
         }
 
-        if (this.player.y >= this.renderer.mainCamera.viewport.height - 100 || this.player.y <= 100) {
+        if (this.playerTransform.y >= this.renderer.mainCamera.viewport.height - 100 || this.playerTransform.y <= 100) {
             this.renderer.mainCamera.viewport.y += vertical * this.testSpeed;
             this.renderer.mainCamera.viewport.y = Math.max(0, Math.min(this.renderer.mainCamera.viewport.y, this.renderer.mainCamera.max.y));
         }
 
+        // console.log(this.playerTransform);
+
         // Sample motion.
         let transform = (<TransformComponent>this.exitEntity.getComponent(TransformComponent.name)).transform;
 
-        console.log(transform);
+        // console.log(transform);
 
         transform.x += Time.deltaTime * 500;
         transform.clampX(0, this.renderer.getCanvasWidth() - 200);

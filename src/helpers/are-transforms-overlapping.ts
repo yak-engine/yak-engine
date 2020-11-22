@@ -20,22 +20,4 @@ export default function areTransformsOverlapping(targetTransform: Transform, con
     }
 
     return true;
-
-    // if (isCoordinateContained(new Point(targetTransform.x, targetTransform.y), containerTransform)) {
-    //     return true;
-    // }
-
-    // if (isCoordinateContained(new Point(targetTransform.x + targetTransform.width, targetTransform.y), containerTransform)) {
-    //     return true;
-    // }
-
-    // if (isCoordinateContained(new Point(targetTransform.x, targetTransform.y + targetTransform.height), containerTransform)) {
-    //     return true;
-    // }
-
-    // if (isCoordinateContained(new Point(targetTransform.x + targetTransform.width, targetTransform.y + targetTransform.height), containerTransform)) {
-    //     return true;
-    // }
-
-    // return false;
 }

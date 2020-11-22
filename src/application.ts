@@ -10,6 +10,13 @@ import ColliderComponent from './components/collider/ColliderComponent';
 import ManagerFactory from './components/ManagerFactory';
 import TransformComponent from './components/transform/TransformComponent';
 import TransformComponentManager from './components/transform/TransformComponentManager';
+import MaterialComponentManager from './components/MaterialComponentManager';
+import SpriteRendererComponent from './components/sprite-renderer/SpriteRendererComponent';
+import SpriteRendererComponentManager from './components/sprite-renderer/SpriteRendererComponentManager';
+import MaterialComponent from './components/material/MaterialComponent';
+import TileMapComponent from './components/tile-map/TileMapComponent';
+import TileMapComponentManager from './components/tile-map/TileMapComponentManager';
+import ColliderComponentManager from './components/collider/ColliderComponentManager';
 
 export default abstract class Application {
     /**
@@ -28,7 +35,11 @@ export default abstract class Application {
 
     constructor() {
         // Register required component.
-        ManagerFactory.register(TransformComponent.name, TransformComponentManager)
+        ManagerFactory.register(TransformComponent.name, TransformComponentManager);
+        ManagerFactory.register(MaterialComponent.name, MaterialComponentManager);
+        ManagerFactory.register(SpriteRendererComponent.name, SpriteRendererComponentManager);
+        ManagerFactory.register(TileMapComponent.name, TileMapComponentManager);
+        ManagerFactory.register(ColliderComponent.name, ColliderComponentManager);
     }
 
     /**
@@ -92,20 +103,6 @@ export default abstract class Application {
                         console.log('collider hit');
                     }
                 }
-
-                // if (colliderIndex !== targetIndex && areTransformsOverlapping(colliderComponent.transform, targetCollider.transform)) {
-                //     if (targetCollider.isTrigger) {
-                //         console.log('inside trigger');
-                //     }
-                //     else {
-                //         let horizontal = Input.horizontal();
-
-                //         if (horizontal > 0) {
-                //             console.log('hit when moving right');
-                //             colliderComponent.transform.x = targetCollider.transform.x;
-                //         }
-                //     }
-                // }
             })
         });
 

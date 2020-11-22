@@ -5,6 +5,8 @@ export default class ComponentManager {
     entities: Array<Entity> = new Array();
     data: Array<Component> = new Array();
 
+    entityDataMap: Map<number, number> = new Map();
+
     addComponentInstance(entity: Entity, component: Component): void {
         let index = this.entities.findIndex(x => x.id === entity.id);
 
@@ -16,5 +18,6 @@ export default class ComponentManager {
         }
 
         this.data.push(component);
+        this.entityDataMap.set(entity.id, this.data.length - 1);
     }
 }

@@ -10,6 +10,14 @@ import Scene from "./scene";
 import Camera from "./camera";
 import Input from "./input";
 import isTransformEmpty from "../helpers/is-transform-empty";
+import ManagerFactory from "../components/ManagerFactory";
+import SpriteRendererComponent from "../components/sprite-renderer/SpriteRendererComponent";
+import EntityManager from "../components/EntityManager";
+import Entity from "../entity";
+import MaterialComponent from "../components/material/MaterialComponent";
+import TransformComponent from "../components/transform/TransformComponent";
+import TileMapComponent from "../components/tile-map/TileMapComponent";
+import TileMapComponentManager from "../components/tile-map/TileMapComponentManager";
 
 export default class Renderer {
     /**
@@ -107,7 +115,58 @@ export default class Renderer {
         this.clearCanvas();
         this.fillCanvas();
         this.drawLayers();
-        this.drawPrimitives();
+        // this.drawPrimitives();
+
+        // Run through renderer system.
+        EntityManager.getInstance().entities.forEach((entity: Entity) => {
+            // console.log(entity.id);
+
+            let spriteRendererComponent = entity.getComponent<SpriteRendererComponent>(SpriteRendererComponent.name);
+
+            if (spriteRendererComponent) {
+                let materialComponent = entity.getComponent<MaterialComponent>(MaterialComponent.name);
+
+                if (materialComponent) {
+                    this.context.fillStyle = materialComponent.fillStyle;
+                    this.context.globalAlpha = materialComponent.alpha;
+                }
+
+                let transform = entity.getComponent<TransformComponent>(TransformComponent.name).transform;
+
+                if (spriteRendererComponent.row !== undefined) {
+                    console.log(entity.id);
+
+                    this.context.drawImage(
+                        this.tilesets[spriteRendererComponent.layer].image,
+                        spriteRendererComponent.column * this.scene.spriteSize,
+                        spriteRendererComponent.row * this.scene.spriteSize,
+                        this.scene.spriteSize,
+                        this.scene.spriteSize,
+                        transform.x,
+                        transform.y,
+                        this.scene.spriteSize,
+                        this.scene.spriteSize
+                    );
+                }
+                else {
+                    this.context.fillRect(transform.x, transform.y, transform.width, transform.height);
+                }
+            }
+
+            // Reset renderer context to default values.
+            this.context.fillStyle = Configuration.canvasFill;
+            this.context.globalAlpha = 1;
+        });
+
+        // Run through tile map system.
+        let manager = <TileMapComponentManager>ManagerFactory.get(TileMapComponent.name);
+        // manager.entities
+
+        // manager.data.forEach
+
+        ManagerFactory.get(SpriteRendererComponent.name).data.forEach((spriteRendererComponent: SpriteRendererComponent) => {
+            
+        });
         
         this.uiFragmentsRender.run();
 
