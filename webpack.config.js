@@ -6,7 +6,7 @@ module.exports = {
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),
     watchContentBase: true,
-    port: 9000,
+    port: 9001,
     hot: false,
     inline: true,
     open: true,

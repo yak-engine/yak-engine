@@ -73,12 +73,23 @@
 - [ ] Tilemap component
 - [ ] Image component
 
-- Add image component
+- Add image component (ALMOST DONE)
 	- Still need to actual render the images.
-- Clean up
-- Add tilemap component
-- Add js-yaml to editor project
-- Look at storing the scenes in a sequelize database or something
+- Clean up (DONE)
+- Add tilemap component (ACTUALLY USE RENDERER)
+- Add camera component
+	- Is there a way to limit to one component per scene.
+- Add js-yaml to editor project (DONE)
+- Create inspector panel for when an entity is clicked you can
+view the components attached to the entity
+	- Need to be able to remove components from the inspector
+		- Not all components can be deleted. Stuff like transform and tag.
+	- Need to be able to manage component values from the inspector
+- Launch the current scene from the editor
+- Save the current scene from the editor
+- Delete a scene from the editor
+- View all the scenes from the editor
+- Look at storing the scenes in a sequelize database or something (RIGHT NOW JUST DOING FILE SYSTEM)
 - Start adding UI components
 	- Text
 	- Button

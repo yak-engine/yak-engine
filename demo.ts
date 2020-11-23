@@ -77,9 +77,8 @@ export default class Demo extends Application {
         this.playerTransform.width = 32;
         this.playerTransform.height = 32;
 
-        this.renderer.playerEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(this.playerTransform, 0, 0, 128, 5));
+        this.renderer.playerEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(0, 0, 128, 5));
         this.renderer.playerEntity.addComponent<ColliderComponent>(new ColliderComponent(this.playerTransform));
-        this.renderer.playerEntity.addComponent<MaterialComponent>(new MaterialComponent('transparent', 0.5));
 
         // Seed demo enemies
         for (let i = 0; i < 5; i++) {
@@ -92,7 +91,7 @@ export default class Demo extends Application {
             enemyTransform.height = 32;
 
             enemyEntity.addComponent<ColliderComponent>(new ColliderComponent(enemyTransform));
-            enemyEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(enemyTransform, 0, 0, 131, 6));
+            enemyEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(0, 0, 131, 6));
             enemyEntity.addComponent<MaterialComponent>(new MaterialComponent('#FFCD43'));
         }
 
@@ -106,7 +105,7 @@ export default class Demo extends Application {
             coinTransform.height = 32;
 
             coinEntity.addComponent<ColliderComponent>(new ColliderComponent(coinTransform, true));
-            coinEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(coinTransform, 0, 0, 107, 6));
+            coinEntity.addComponent<SpriteRendererComponent>(new SpriteRendererComponent(0, 0, 107, 6));
             coinEntity.addComponent<MaterialComponent>(new MaterialComponent('#FFCD43'));
         }
 
