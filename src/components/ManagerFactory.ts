@@ -5,7 +5,7 @@ export default class ManagerFactory {
     private static managers: Map<string, ComponentManager> = new Map();
 
     constructor() {
-        
+
     }
 
     public static register(componentName: string, manager: typeof ComponentManager): void {
@@ -21,5 +21,9 @@ export default class ManagerFactory {
         }
 
         throw "Manager has not been registered";
+    }
+    
+    public static log(): void {
+        ManagerFactory.managers.forEach((manager) => console.log(manager));
     }
 }

@@ -13,12 +13,15 @@ import MaterialComponentManager from './components/MaterialComponentManager';
 import SpriteRendererComponent from './components/sprite-renderer/SpriteRendererComponent';
 import SpriteRendererComponentManager from './components/sprite-renderer/SpriteRendererComponentManager';
 import MaterialComponent from './components/material/MaterialComponent';
-import TileMapComponent from './components/tile-map/TileMapComponent';
-import TileMapComponentManager from './components/tile-map/TileMapComponentManager';
+import TileMapComponent from './components/tilemap/TilemapComponent';
+import TileMapComponentManager from './components/tilemap/TilemapComponentManager';
 import ColliderComponentManager from './components/collider/ColliderComponentManager';
 import CollisionSystem from './systems/collision-system';
 import TagComponent from './components/tag/TagComponent';
 import TagComponentManager from './components/tag/TagComponentManager';
+import ImageComponent from './components/image/ImageComponent';
+import ImageComponentManager from './components/image/ImageComponentManager';
+import TilemapComponent from './components/tilemap/TilemapComponent';
 
 export default abstract class Application {
     /**
@@ -39,12 +42,15 @@ export default abstract class Application {
 
     constructor() {
         // Register required component.
+        // TODO: Only register the required components.
         ManagerFactory.register(TagComponent.name, TagComponentManager);
         ManagerFactory.register(TransformComponent.name, TransformComponentManager);
         ManagerFactory.register(MaterialComponent.name, MaterialComponentManager);
         ManagerFactory.register(SpriteRendererComponent.name, SpriteRendererComponentManager);
         ManagerFactory.register(TileMapComponent.name, TileMapComponentManager);
         ManagerFactory.register(ColliderComponent.name, ColliderComponentManager);
+        ManagerFactory.register(ImageComponent.name, ImageComponentManager);
+        ManagerFactory.register(TilemapComponent.name, TileMapComponentManager);
     }
 
     /**

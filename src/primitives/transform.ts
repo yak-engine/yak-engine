@@ -1,5 +1,4 @@
 import Camera from "../graphics/camera";
-import { Logger } from "../logging/logger";
 
 export default class Transform {
     x: number;
@@ -7,8 +6,6 @@ export default class Transform {
 
     width: number;
     height: number;
-
-    fillStyle: string;
 
     constructor(x: number, y: number, width: number, height: number) {
         this.x = x;
@@ -55,6 +52,13 @@ export default class Transform {
 
     offsetY(): number {
         return this.y + this.height;
+    }
+
+    lerp(startValue: number, endValue: number, amount: number): number {
+        amount = amount < 0 ? 0 : amount;
+        amount = amount > 1 ? 1 : amount;
+
+        return startValue + (endValue - startValue) * amount;
     }
 
     /**

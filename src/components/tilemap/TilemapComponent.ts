@@ -1,6 +1,6 @@
 import Component from "../Component";
 
-export default class TileMapComponent extends Component {
+export default class TilemapComponent extends Component {
     tiles: Array<number>;
 
     constructor(tiles?: Array<number>) {

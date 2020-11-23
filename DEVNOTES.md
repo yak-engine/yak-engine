@@ -62,3 +62,25 @@
 - [ ] Add state manager overlay to enable browsing the current state
 - [ ] Implement Sass for the default styles
 - [ ] Ensure the load order works for all the other overlay positions 
+
+# Components
+- [x] Tag component
+- [x] Sprite renderer component
+- [x] Material component
+- [ ] Audio source component
+- [x] Collider component
+- [ ] Particles component
+- [ ] Tilemap component
+- [ ] Image component
+
+- Add image component
+	- Still need to actual render the images.
+- Clean up
+- Add tilemap component
+- Add js-yaml to editor project
+- Look at storing the scenes in a sequelize database or something
+- Start adding UI components
+	- Text
+	- Button
+	- Panel 
+- Start basic demo game
