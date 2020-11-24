@@ -73,6 +73,7 @@
 - [ ] Tilemap component
 - [ ] Image component
 
+- For editor add axios or something.
 - Add image component (ALMOST DONE)
 	- Still need to actual render the images.
 - Clean up (DONE)
@@ -85,6 +86,7 @@ view the components attached to the entity
 	- Need to be able to remove components from the inspector
 		- Not all components can be deleted. Stuff like transform and tag.
 	- Need to be able to manage component values from the inspector
+- Rename map-editor-component to scene-editor-component
 - Launch the current scene from the editor
 - Save the current scene from the editor
 - Delete a scene from the editor

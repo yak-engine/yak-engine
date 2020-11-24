@@ -3,12 +3,11 @@ import Transform from "../../primitives/transform";
 import Component from "../Component";
 
 export default class ColliderComponent extends Component {
-    isTrigger: boolean = false;
-    isColliding: boolean =false;
+    public isTrigger: boolean = false;
+    public transform: Transform;
 
-    points: Array<Point> = new Array();
-
-    transform: Transform;
+    private isColliding: boolean =false;
+    private points: Array<Point> = new Array();
 
     constructor(transform: Transform, isTrigger: boolean = false) {
         super();
